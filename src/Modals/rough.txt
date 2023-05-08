@@ -1,0 +1,454 @@
+import React from "react";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as Yup from "yup";
+import { Link } from "react-router-dom";
+
+const schema = Yup.object({
+    ConfirmMailAddress: Yup.string().required("Please enter Vaild Email"),
+    cardNumber: Yup.string()
+        .required("Card number is required")
+        .matches(/^\d{16}$/, "Card number must be 16 digits"),
+    ExpDate: Yup.string()
+        .required("Expiration date is required")
+        .matches(/^(0[1-9]|1[0-2])\/\d{2}$/, "Invalid expiration date"),
+    CVV: Yup.string()
+        .required("CVV is required")
+        .matches(/^\d{3,4}$/, "CVV must be 3 or 4 digits"),
+});
+
+const ConfirmPurchase = () => {
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+    } = useForm({
+        resolver: yupResolver(schema),
+    });
+
+    const onSubmission = data => {
+        console.log(data);
+    };
+    return (
+        <div>
+            <form onSubmit={handleSubmit(onSubmission)}>
+                <div className="form-group">
+                    <label for="email" className="label-txt">
+                        Confirm Email Address
+                    </label>
+                    <input
+                        type="text"
+                        id="Year1taxSaving"
+                        name="ConfirmMailAddress"
+                        {...register("ConfirmMailAddress", { required: true })}
+                    />
+                    {errors.ConfirmMailAddress && (
+                        <p style={{ color: "red", fontSize: "12px" }}>
+                            {errors.ConfirmMailAddress.message}
+                        </p>
+                    )}
+                </div>
+                <div className="form-group">
+                    <label for="cardNumber" className="label-txt">
+                        Card Number
+                    </label>
+                    <input
+                        type="text"
+                        id="cardNumber"
+                        name="cardNumber"
+                        {...register("cardNumber", { required: true })}
+                    />
+                    {errors.cardNumber && (
+                        <p style={{ color: "red", fontSize: "12px" }}>
+                            {errors.cardNumber}
+                        </p>
+                    )}
+                </div>
+                <div style={{ display: "flex" }}>
+                    <div style={{ marginRight: "-60px" }}>
+                        <label htmlFor="ExpDate">Exp Date</label>
+                        <input
+                            type="text"
+                            id="ExpDate"
+                            name="ExpDate"
+                            placeholder="MM/YY"
+                            {...register("ExpDate", { required: true })}
+                        />
+                    </div>
+                    {errors.ExpDate && (
+                        <p style={{ color: "red", fontSize: "12px" }}>
+                            {errors.ExpDate.message}
+                        </p>
+                    )}
+                    <div>
+                        <label htmlFor="CVV">CVV</label>
+                        <input
+                            type="text"
+                            id="CVV"
+                            name="CVV"
+                            {...register("CVV", {
+                                required: true,
+                            })}
+                        />
+                    </div>
+                    {errors.CVV && (
+                        <p style={{ color: "red", fontSize: "12px" }}>
+                            {errors.CVV.message}
+                        </p>
+                    )}
+                </div>
+                <div className="btn">
+                    <Link to="/" className="my-link">
+                        <button style={{ margin: "20px" }}>Cancel</button>
+                    </Link>
+                    <button type="submit">Purchase Report</button>
+                </div>
+            </form>
+        </div>
+    );
+};
+
+export default ConfirmPurchase;
+
+
+
+form {
+    width: 40%;
+    margin: 0 auto;
+    background-color: #fff;
+    border: 1px solid #000;
+    padding: 1em;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1%;
+    padding-right: 10%;
+}
+
+label {
+    display: flex;
+    margin-bottom: 2px;
+    font-size: medium;
+    font-weight: lighter;
+}
+
+input[type="text"],
+input[type="email"] {
+    display: flex;
+    width: 80%;
+    padding: 10px;
+    border-radius: "none";
+    border: 1px solid #ccc;
+    margin-top: 1px;
+    height: 8px;
+}
+
+.btn {
+    margin-top: 40px;
+}
+
+button {
+    background-color: white;
+    color: gray;
+    border: 1px solid #ccc;
+    justify-content: center;
+    margin-left: 50px;
+}
+.backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 50%;
+    height: 100vh;
+    z-index: 100;
+    background: rgba(0, 0, 0, 0.4);
+}
+
+.form-modal {
+    position: absolute;
+    justify-content: center;
+    align-items: center;
+    top: 20vh;
+    left: 35%;
+    width: 50%;
+    height: "600px" !important;
+    background-color: rgb(255, 255, 255);
+    z-index: 500 !important;
+    overflow: scroll;
+}
+
+
+
+const onSubmitHandler = async (data, elements, stripe) => {
+  const result = await stripe.confirmCardPayment(clientSecret, {
+    payment_method: {
+      card: elements.getElement(CardElement),
+      billing_details: {
+        name: data.name,
+      },
+    },
+  });
+
+  if (result.error) {
+    // Show error to your user
+    console.log(result.error.message);
+  } else {
+    // The payment has been processed!
+    if (result.paymentIntent.status === "succeeded") {
+      // Show success page to your user
+      console.log("Payment succeeded");
+    }
+  }
+};
+
+
+
+// MyComponent.js
+
+import React, { useContext } from 'react';
+import { FormContext } from 'path/to/FormContext';
+import { calculateFlooringCost } from 'path/to/helper';
+
+function MyComponent() {
+  const formData = useContext(FormContext);
+  const flooringCost = calculateFlooringCost(formData);
+
+  return <p>Total flooring cost: ${flooringCost}</p>;
+}
+
+
+//Estimatedtax copy
+
+import React, { useState } from "react";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as Yup from "yup";
+import { Link, redirect } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import "../Stylesheet/EstimatedTaxSaving.css";
+import ConfirmPurchase from "../Modals/ConfirmPurchase";
+import { calculateFlooringCost } from "../Helpers/Helper";
+import { useData } from "../Context/DataContext";
+
+const schema = Yup.object({
+    YearOneTaxSaving: Yup.number()
+        .required("Please enter Year one tax saving")
+        .typeError("Please enter Year one tax saving"),
+    YearTwoTaxSaving: Yup.number()
+        .required("Please enter Year two tax saving")
+        .typeError("Please enter Year two tax saving"),
+    YearThreeTaxSaving: Yup.number()
+        .required("Please enter Year three tax saving")
+        .typeError("Please enter Year three tax saving"),
+    myCheckbox: Yup.boolean().oneOf([true], "Checkbox must be checked"),
+});
+
+const EstimatedTaxSavings = ({ onPersonDetailSubmit }) => {
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+    } = useForm({
+        resolver: yupResolver(schema),
+    });
+    const navigate = useNavigate();
+
+    const [submitted, SetSubmitted] = useState(false);
+    const [OpenModal, setModal] = useState(false);
+
+    const { data, setValues } = useData();
+
+    //console.log(`$${calculateFlooringCost(data)}`);
+
+    //const taxSavings = calculateFlooringCost(data);
+
+    const onSubmitHandler = data => {
+        console.log(data);
+        setModal(true);
+        SetSubmitted(true);
+    };
+
+    const cancelModal = () => {
+        setModal(!OpenModal);
+    };
+
+    return (
+        <div>
+            {OpenModal && <ConfirmPurchase onClick={cancelModal} />}
+            <h3 style={{ color: "grey", padding: "20px", textAlign: "center" }}>
+                Estimated tax depreciation after 1 Year
+            </h3>
+            <form onSubmit={handleSubmit(onSubmitHandler)} className="form">
+                <div className="form-group">
+                    <label htmlFor="YearOneTaxSaving" className="label-txt">
+                        Year 1 tax savings
+                    </label>
+                    <input
+                        type="text"
+                        id="YearOneTaxSaving"
+                        name="YearOneTaxSaving"
+                        {...register("YearOneTaxSaving", { required: true })}
+                    />
+                    {errors.YearOneTaxSaving && (
+                        <p style={{ color: "red", fontSize: "12px" }}>
+                            {errors.YearOneTaxSaving.message}
+                        </p>
+                    )}
+                </div>
+                <div className="form-group">
+                    <label htmlFor="" className="label-txt">
+                        Year 2 tax savings
+                    </label>
+                    <input
+                        type="text"
+                        id="YearTwoTaxSaving"
+                        name="YearTwoTaxSaving"
+                        {...register("YearTwoTaxSaving", { required: true })}
+                    />
+                    {errors.YearTwoTaxSaving && (
+                        <p style={{ color: "red", fontSize: "12px" }}>
+                            {errors.YearTwoTaxSaving.message}
+                        </p>
+                    )}
+                </div>
+                <div className="form-group">
+                    <label htmlFor="YearThreeTaxSaving" className="label-txt">
+                        Year 3 tax Savings
+                    </label>
+                    <input
+                        type="text"
+                        id="YearThreeTaxSaving"
+                        name="YearThreeTaxSaving"
+                        {...register("YearThreeTaxSaving", { required: true })}
+                    />
+                    {errors.YearThreeTaxSaving && (
+                        <p style={{ color: "red", fontSize: "12px" }}>
+                            {errors.YearThreeTaxSaving.message}
+                        </p>
+                    )}
+                </div>
+                <div className="checkbox">
+                    <div className="form-check">
+                        <input
+                            name="my-checkbox"
+                            className="form-check-input"
+                            type="checkbox"
+                            value=""
+                            id="flexCheckDefault"
+                            {...register("myCheckbox", { required: true })}
+                        />
+                        <label
+                            className="form-check-label"
+                            htmlFor="flexCheckDefault"
+                        >
+                            Year 3 tax savings
+                        </label>
+                        {errors.myCheckbox && (
+                            <p style={{ color: "red", fontSize: "12px" }}>
+                                {errors.myCheckbox.message}
+                            </p>
+                        )}
+                    </div>
+                </div>
+
+                <div className="btn">
+                    <Link to="/" className="my-link">
+                        <button style={{ margin: "10px" }}>Cancel</button>
+                    </Link>
+
+                    <button type="submit">Purchase Report</button>
+                </div>
+            </form>
+        </div>
+    );
+};
+
+export default EstimatedTaxSavings;
+
+
+npm install pdf-lib
+# or
+yarn add pdf-lib
+
+
+import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
+import hallTicketTemplate from "./hallTicketTemplate.pdf";
+
+// Load the PDF template
+const loadPdfTemplate = async () => {
+  const pdfTemplateBytes = await fetch(hallTicketTemplate).then((res) =>
+    res.arrayBuffer()
+  );
+  const pdfDoc = await PDFDocument.load(pdfTemplateBytes);
+  return pdfDoc;
+};
+
+
+
+const onSubmit = async (formData) => {
+  // Load the PDF template
+  const pdfDoc = await loadPdfTemplate();
+
+  // Get the form fields from the PDF template
+  const form = pdfDoc.getForm();
+  const firstNameField = form.getTextField("firstName");
+  const emailField = form.getTextField("email");
+
+  // Fill out the form fields with the submitted form data
+  firstNameField.setText(formData.firstName);
+  emailField.setText(formData.email);
+
+  // Save the filled-out PDF as a new file
+  const pdfBytes = await pdfDoc.save();
+  const blob = new Blob([pdfBytes], { type: "application/pdf" });
+  const url = URL.createObjectURL(blob);
+  window.open(url, "_blank");
+};
+
+
+
+import { PDFDocument } from 'pdf-lib';
+
+async function replaceWordsInTemplatePdf() {
+  // Load the PDF template
+  const templatePdfBytes = await fetch('/path/to/template.pdf').then(res => res.arrayBuffer());
+  const templatePdfDoc = await PDFDocument.load(templatePdfBytes);
+
+  // Replace words on each page of the PDF template
+  const formFieldValues = {
+    name: 'John Doe',
+    rollNumber: '12345',
+    examDate: '01/01/2023',
+    examTime: '10:00 AM',
+  };
+  const pageCount = templatePdfDoc.getPageCount();
+  for (let i = 0; i < pageCount; i++) {
+    const page = templatePdfDoc.getPage(i);
+    const textContent = await page.getTextContent();
+    const replacedTextContent = textContent.items.reduce((result, item) => {
+      const text = item.str;
+      const replacedText = text
+        .replace(/{{name}}/g, formFieldValues.name)
+        .replace(/{{rollNumber}}/g, formFieldValues.rollNumber)
+        .replace(/{{examDate}}/g, formFieldValues.examDate)
+        .replace(/{{examTime}}/g, formFieldValues.examTime);
+      result += replacedText;
+      return result;
+    }, '');
+    page.setTextContent(replacedTextContent);
+  }
+
+  // Create a new PDF document with the replaced text content
+  const newPdfDoc = await PDFDocument.create();
+  for (let i = 0; i < pageCount; i++) {
+    const page = templatePdfDoc.getPage(i);
+    const { width, height } = page.getSize();
+    const newPage = newPdfDoc.addPage([width, height]);
+    const contentStream = await newPdfDoc.attach(contentStreamFromPdfPage(page));
+    newPage.addContentStreams(contentStream);
+  }
+  const newPdfBytes = await newPdfDoc.save();
+}
+

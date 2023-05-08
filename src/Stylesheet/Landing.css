@@ -1,0 +1,12 @@
+.landing-btn {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.custom-btn {
+    background-color: white;
+    border: 1px solid gray;
+    padding: 10px 40px;
+}

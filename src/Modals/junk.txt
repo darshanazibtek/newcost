@@ -1,0 +1,172 @@
+const templatePdfBytes = await fetch('/path/to/template.pdf').then(res => res.arrayBuffer());
+  const pdfDoc = await PDFDocument.load(templatePdfBytes);
+
+  // Get the fields of the PDF template
+  const form = pdfDoc.getForm();
+  const nameField = form.getTextField('Name');
+  const rollNumberField = form.getTextField('Roll Number');
+  const examDateField = form.getTextField('Exam Date');
+  const examTimeField = form.getTextField('Exam Time');
+
+  // Set the values of the fields with the form data
+  nameField.setText(formData.name);
+  rollNumberField.setText(formData.rollNumber);
+  examDateField.setText(formData.examDate);
+  examTimeField.setText(formData.examTime);
+
+  // Create a new page with the form data
+  const page = pdfDoc.addPage([612, 792]);
+  const contentStream = PDFContentStream.of(page);
+  contentStream
+    .beginText()
+    .setFont('Helvetica', 20)
+    .setLeading(30)
+    .moveText(100, 600)
+    .showText(`Name: ${formData.name}`)
+    .moveText(0, -30)
+    .showText(`Roll Number: ${formData.rollNumber}`)
+    .moveText(0, -30)
+    .showText(`Exam Date: ${formData.examDate}`)
+    .moveText(0, -30)
+    .showText(`Exam Time: ${formData.examTime}`)
+    .endText();
+
+  // Save the PDF document as a new file
+  const pdfBytes = await pdfDoc.save();
+  const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+  const url = URL.createObjectURL(blob);
+  window.open(url);
+
+
+  import { PDFDocument } from 'pdf-lib';
+import nodemailer from 'nodemailer';
+
+const modifyPdfAndSendEmail = async (formState) => {
+  // Load existing PDF template and get its binary data as Uint8Array bytes
+  const response = await fetch('template.pdf');
+  const existingPdfBytes = await response.arrayBuffer();
+  const existingPdfDoc = await PDFDocument.load(existingPdfBytes);
+  const existingPdfPage = existingPdfDoc.getPages()[0];
+
+  // Create new PDF document and add a page that is a copy of the template PDF page
+  const newPdfDoc = await PDFDocument.create();
+  const newPdfPage = newPdfDoc.addPage(existingPdfPage);
+
+  // Add form fields to the new PDF page
+  const textField = newPdfPage.createTextField('name');
+  textField.setText(formState.name);
+
+  // Save the modified PDF document as a Uint8Array
+  const newPdfBytes = await newPdfDoc.save();
+
+  // Process payment using Stripe
+  // ...
+
+  // If payment is successful, send the modified PDF document via email
+  const transporter = nodemailer.createTransport({
+    host: 'smtp.gmail.com',
+    port: 587,
+    auth: {
+      user: 'your_email@gmail.com',
+      pass: 'your_email_password',
+    },
+  });
+
+  const mailOptions = {
+    from: 'your_email@gmail.com',
+    to: 'recipient_email@gmail.com',
+    subject: 'Modified PDF',
+    attachments: [
+      {
+        filename: 'modified_pdf.pdf',
+        content: newPdfBytes,
+        contentType: 'application/pdf',
+      },
+    ],
+  };
+
+  transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      console.log(error);
+    } else {
+      console.log('Email sent: ' + info.response);
+    }
+  });
+};
+
+
+import React, { useRef } from 'react';
+import { useReactToPrint } from 'react-to-print';
+import htmlToPdfMake from 'html-to-pdfmake';
+import pdfMake from 'pdfmake/build/pdfmake';
+import pdfFonts from 'pdfmake/build/vfs_fonts';
+import nodemailer from 'nodemailer';
+
+pdfMake.vfs = pdfFonts.pdfMake.vfs;
+
+const Form = ({ formData }) => {
+  return (
+    <div>
+      <h2>Form Data</h2>
+      <p>Name: {formData.name}</p>
+      <p>Email: {formData.email}</p>
+      <p>Message: {formData.message}</p>
+    </div>
+  );
+};
+
+const PrintableForm = ({ formData }) => {
+  const formRef = useRef();
+
+  const handlePrint = useReactToPrint({
+    content: () => formRef.current,
+  });
+
+  const handleSendEmail = async () => {
+    const pdfDocDefinition = {
+      content: htmlToPdfMake(formRef.current.innerHTML),
+    };
+
+    const pdfDocGenerator = pdfMake.createPdf(pdfDocDefinition);
+
+    const pdfBuffer = await new Promise((resolve, reject) => {
+      pdfDocGenerator.getBuffer((buffer) => {
+        resolve(buffer);
+      }, reject);
+    });
+
+    const transporter = nodemailer.createTransport({
+      service: 'Gmail',
+      auth: {
+        user: 'your_email@gmail.com',
+        pass: 'your_password',
+      },
+    });
+
+    const mailOptions = {
+      from: 'your_email@gmail.com',
+      to: 'recipient_email@example.com',
+      subject: 'Form Submission',
+      text: 'Please see attached PDF for form submission.',
+      attachments: [
+        {
+          filename: 'form_submission.pdf',
+          content: pdfBuffer,
+          contentType: 'application/pdf',
+        },
+      ],
+    };
+
+    await transporter.sendMail(mailOptions);
+  };
+
+  return (
+    <div ref={formRef}>
+      <Form formData={formData} />
+      <button onClick={handlePrint}>Print</button>
+      <button onClick={handleSendEmail}>Send Email</button>
+    </div>
+  );
+};
+
+export default PrintableForm;

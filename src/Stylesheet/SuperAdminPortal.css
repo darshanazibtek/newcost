@@ -1,0 +1,84 @@
+.portal-form {
+    width: 90%;
+    margin: 0 auto;
+    background-color: #fff;
+    border: 1px solid black;
+    text-align: left;
+    margin-top: 5%;
+    margin-bottom: 5%;
+    padding-bottom: 500px;
+}
+
+.form-top {
+    border-bottom: 1px solid black;
+    width: 100%;
+}
+
+.first-head {
+    color: grey;
+    padding: 20px;
+    text-align: center;
+    justify-content: center;
+}
+
+.form-group-portal {
+    display: flex;
+    margin: 0 auto;
+    padding: 15px;
+}
+
+.label-txt-portal {
+    display: flex;
+    margin-bottom: 2px;
+    font-size: medium;
+    font-weight: lighter;
+    margin-right: 30px;
+}
+
+.btn-portal {
+    display: flex;
+    text-align: center;
+    justify-content: right;
+    padding: 5px;
+}
+
+.button-portal {
+    background-color: white;
+    color: gray;
+    border: 1px solid #ccc;
+    justify-content: center;
+    margin-right: 3px;
+}
+
+.currency-code {
+    position: absolute;
+    left: 10px;
+    top: 1px;
+    padding: 0;
+}
+
+.currency-wrap {
+    position: relative;
+}
+
+.text-currency {
+    display: flex;
+    width: 80%;
+    padding: 0px 20px;
+    border-radius: 0%;
+    border: 1px solid #ccc;
+}
+
+.portal-error {
+    color: red;
+    font-size: 12px;
+    padding: 0;
+    margin: 0;
+}
+
+@media (max-width: 600px) {
+    .portal-form {
+        width: 85%;
+        margin: auto auto;
+    }
+}

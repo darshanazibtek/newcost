@@ -1,38 +1,60 @@
 {
-  "name": "step",
-  "version": "0.1.0",
-  "private": true,
-  "dependencies": {
-    "@testing-library/jest-dom": "^5.16.5",
-    "@testing-library/react": "^13.4.0",
-    "@testing-library/user-event": "^13.5.0",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-scripts": "5.0.1",
-    "web-vitals": "^2.1.4"
-  },
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  }
+    "name": "mycostseg",
+    "version": "0.1.0",
+    "private": true,
+    "dependencies": {
+        "@hookform/resolvers": "^2.9.11",
+        "@react-pdf/renderer": "^3.1.8",
+        "@stdlib/datasets-us-states-names": "^0.0.8",
+        "@stripe/react-stripe-js": "^2.1.0",
+        "@stripe/stripe-js": "^1.52.0",
+        "@testing-library/jest-dom": "^5.16.5",
+        "@testing-library/react": "^13.4.0",
+        "@testing-library/user-event": "^13.5.0",
+        "bootstrap": "^5.2.3",
+        "email-validator": "^2.0.4",
+        "email-verify": "^0.2.1",
+        "file-saver": "^2.0.5",
+        "jspdf": "^2.5.1",
+        "moment": "^2.29.4",
+        "nodemailer": "^6.9.1",
+        "pdf-lib": "^1.17.1",
+        "react": "^18.2.0",
+        "react-dom": "^18.2.0",
+        "react-hook-form": "^7.43.4",
+        "react-hook-form-resolvers": "^0.0.1",
+        "react-router-dom": "^6.8.2",
+        "react-scripts": "5.0.1",
+        "react-select-us-states": "^0.1.2",
+        "react-us-states": "^1.0.2",
+        "stripe": "^11.16.0",
+        "us-states": "^0.0.1",
+        "ustates": "^0.1.6",
+        "web-vitals": "^2.1.4",
+        "yup": "^1.0.2"
+    },
+    "scripts": {
+        "start": "react-scripts start",
+        "build": "react-scripts build",
+        "test": "react-scripts test",
+        "eject": "react-scripts eject"
+    },
+    "eslintConfig": {
+        "extends": [
+            "react-app",
+            "react-app/jest"
+        ]
+    },
+    "browserslist": {
+        "production": [
+            ">0.2%",
+            "not dead",
+            "not op_mini all"
+        ],
+        "development": [
+            "last 1 chrome version",
+            "last 1 firefox version",
+            "last 1 safari version"
+        ]
+    }
 }
